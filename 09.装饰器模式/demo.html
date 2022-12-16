@@ -1,0 +1,78 @@
+<!--
+ * @Author: XiaoYu
+ * @Date: 2022-12-16 15:44:10
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button class="filmbtn" onclick="filmbtn()">万里归途</button>
+  <script>
+
+    Function.prototype.before = function (beforeFn) {
+      let _this = this;
+      return function () {
+        // 先进行前置函数调用
+        beforeFn.apply(this, arguments)
+
+        // 执行原来的函数
+        return _this.apply(this.arguments)
+      }
+    }
+
+    Function.prototype.after = function (afterFn) {
+      let _this = this;
+      return function () {
+        
+        // 先执行原来的函数
+        let result = _this.apply(this.arguments)
+
+
+        // 再执行后置函数调用
+        afterFn.apply(this, arguments)
+
+        
+        // 返回结果
+        return result
+      }
+    }
+
+    function log(){
+      console.log('万里归途被点击,上传uv、pv数据');
+    } 
+
+    function render(){
+      console.log('页面处理逻辑');
+    } 
+    render = render.before(log)//执行主线任务之前，先执行log切片任务
+
+    function filmbtn(){
+      //.........
+      render()
+      //.........
+    }
+
+
+
+    // demo2
+    function ajax(url,method,params){
+      console.log(url,method,params);
+    }
+
+    // 需要传token时使用它
+    ajax1 = ajax.before((url,method,params)=>{
+      params.token = "aaaaaaaaaaaaaaaaaaaaaa"
+    })
+
+    // 不需要传token时使用它
+    ajax("/api","post",{
+      name:"kerwin"
+    })
+  </script>
+</body>
+</html>
